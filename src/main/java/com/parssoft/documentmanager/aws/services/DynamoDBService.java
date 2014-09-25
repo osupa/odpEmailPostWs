@@ -61,7 +61,7 @@ public class DynamoDBService {
 
 				// create initial table from object below - all fields are filled in
 				Email createTableInstance = new Email();
-				createTableInstance = createTableInstance.createTablePrep(mapper);
+//				createTableInstance = createTableInstance.createTablePrep(mapper);
 				mapper.save(createTableInstance);
 				// TODO - test out delete process after table has been created
 //				mapper.delete(createTableInstance);

@@ -10,8 +10,6 @@ import com.parssoft.documentmanager.aws.utils.AwsCredentialsHandler;
 import com.parssoft.documentmanager.aws.utils.RegionConfiguration;
 import com.parssoft.documentmanager.utils.EmailPostUtils;
 import com.parssoft.documentmanager.utils.GenericUtilities;
-import com.sendgrid.SendGrid;
-import com.sendgrid.SendGridException;
 import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +30,11 @@ public class SesService {
 	public SesService() {
 	}
 
+	/**
+	 * Send email using Amazon SES
+	 * @param emailBody
+	 * @param attachment
+	 */
 	public void sendEmail(String emailBody, ByteBuffer attachment) {
 
 		Destination destination = new Destination().withToAddresses(
@@ -69,38 +72,12 @@ public class SesService {
 	}
 
 	/**
-	 * Sends confirmation email
+	 * Uses Amazon SES to send confirmation emails
 	 *
 	 * @param fromAddress
+	 * @Deprecated
 	 */
-	public static void sendConfirmationEmailUsingSendGrid(String fromAddress) {
-		SendGrid sendGrid = new SendGrid("osupa", "lagoss1234");
-
-		SendGrid.Email email = new SendGrid.Email();
-//		email.addCc(EmailPostUtils.TO_2);
-		
-		fromAddress = GenericUtilities.emailAddressOnly(fromAddress);
-		email.addTo(fromAddress);
-		email.setFrom(fromAddress);
-		email.setSubject(EmailPostUtils.CONFIRMATION_EMAIL_SUBJECT);
-		email.setText(EmailPostUtils.CONFIRMATION_EMAIL_BODY);
-
-		try {
-			SendGrid.Response response = sendGrid.send(email);
-			log.info("Email sent!  Response was: " + response.getMessage());
-		} catch (SendGridException ex) {
-			GenericUtilities.logException(log, ex);
-			log.error("The email was not sent.", ex);
-		}
-	}
-
-/**
- * Uses Amazon SES to send confirmation emails
- *
- * @param fromAddress
- * @Deprecated
- */
-public static void sendConfirmationEmailUsingSES(String fromAddress) {
+	public static void sendConfirmationEmailUsingSES(String fromAddress) {
 
 		Destination destination = new Destination()
 				.withToAddresses(new String[] {fromAddress});

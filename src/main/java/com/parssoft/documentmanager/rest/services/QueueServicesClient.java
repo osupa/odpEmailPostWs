@@ -8,6 +8,8 @@ import com.parssoft.documentmanager.utils.JSonUtility;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
  *
  * Created on Sep 1, 2014, 10:47:47 PM
  *
- * @author Ade Panko <ade@adepanko.com>
+ * @author Ade
  *
  * Copyright(c) 2014  Copyright(c) 2014 ParsSoft. All Rights Reserved.
  * This software is the proprietary information of ParsSoft.
@@ -26,35 +28,9 @@ import org.springframework.web.client.RestTemplate;
  */
 public class QueueServicesClient {
 
+	private static final Logger logger = LoggerFactory.getLogger(QueueServicesClient.class);
+	
 	public QueueServicesClient() {}
-
-	/**
-	 *
-	 * @param email
-	 * @throws JsonProcessingException
-	 * @throws IOException
-	 */
-	public void postToEmailInboundQueue(Email email)
-			throws JsonProcessingException, IOException {
-		QueueServiceAuth accessToken = getAccessToken();
-
-		HttpHeaders headers = new HttpHeaders();
-
-		headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-		RestTemplate template = new RestTemplate();
-
-		HttpEntity<String> requestEntity
-				= new HttpEntity<>(JSonUtility.convertBeanToJsonString(email), headers);
-
-		String response = template.postForObject(
-				EmailPostUtils.QUEUE_SERVICE_URL_EMAIL.concat(
-						accessToken.getAccessToken()),
-					requestEntity, String.class);
-
-System.out.println("response = " + response);
-	}
-
 
 	/**
 	 * Retrieve our access authorization token
@@ -83,4 +59,34 @@ System.out.println("response = " + response);
 		
 		return auth;
 	}
+
+	/**
+	 * This method calls the queue restful service
+	 *
+	 * @param email
+	 * @throws JsonProcessingException
+	 * @throws IOException
+	 */
+	public void postToEmailInboundQueue(Email email)
+			throws JsonProcessingException, IOException {
+		QueueServiceAuth accessToken = getAccessToken();
+
+		HttpHeaders headers = new HttpHeaders();
+
+		headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+		RestTemplate template = new RestTemplate();
+		logger.info("JSon string(email) = " + JSonUtility.convertBeanToJsonString(email));
+
+		HttpEntity<String> requestEntity
+				= new HttpEntity<>(JSonUtility.convertBeanToJsonString(email), headers);
+
+		String response = template.postForObject(
+				EmailPostUtils.QUEUE_SERVICE_URL_EMAIL.concat(
+						accessToken.getAccessToken()),
+					requestEntity, String.class);
+
+		logger.info("Response = " + response);
+	}
+
 }

@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * 
  * Created on Aug 5, 2014, 2:37:33 AM
  *
- * @author Ade Panko <ade@adepanko.com>
+ * @author Ade
  *
  * Copyright(c) 2014 ParsSoft. All Rights Reserved. This software is the proprietary information of ParsSoft.
  *
@@ -23,9 +23,9 @@ public class ApplicationPropertiesUtils {
 	private transient static final Logger log = LoggerFactory.getLogger(ApplicationPropertiesUtils.class);
 
 	static {
-		// TODO - make path a system variable
-		loadProperties("/home/adepanko/app-data/dm/app-settings/dm.properties");
-//		loadProperties("/home/ubuntu/app-data/dm/app-settings/dm.properties");
+		// our application properties file location - note that this is
+		// stored as a JAVA_OPTS property setting in Tomcat/bin/catalina.sh
+		loadProperties(System.getProperty("APP_SETTINGS_FILE"));
 	}
 
 	private static void loadProperties(String fileName) {
@@ -37,11 +37,9 @@ public class ApplicationPropertiesUtils {
 			while (enums.hasMoreElements()) {
 				String key = enums.nextElement().toString();
 				properties.put(key, p.getProperty(key));
-				System.out.println("key = " + key);
-				System.out.println("p.getProperty(key) = " + p.getProperty(key));
 			}
 		} catch (IOException e) {
-			log.error("Can not find profiles.properties file on classpath:", e);
+			log.error("Can not find profiles.properties file from JAVA_OPTS value in Tomcat:", e);
 		}
 	}
 

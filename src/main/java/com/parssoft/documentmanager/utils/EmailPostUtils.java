@@ -1,5 +1,10 @@
 package com.parssoft.documentmanager.utils;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 /**
  * This class loads application runtime properties from the dm.properties
@@ -7,13 +12,18 @@ package com.parssoft.documentmanager.utils;
  * 
  * Created on Jul 25, 2014, 9:51:27 AM
  *
-* @author Ade Panko <ade@adepanko.com>
+* @author Ade
  *
  * Copyright(c) 2014 ParsSoft. All Rights Reserved. This software is the proprietary information of ParsSoft.
  * 
  */
 
 public class EmailPostUtils {
+
+	private static String htmlString = null;
+
+	public static final String SLASH = "/";
+	public static final String URL_PART_PROTOCOL = "https://";
 
 	private static final String HOME_PATH = ApplicationPropertiesUtils.getProperty("HOME_PATH");
 	
@@ -26,6 +36,14 @@ public class EmailPostUtils {
 
 	// region used
 	public static final String regionName = ApplicationPropertiesUtils.getProperty("REGION");
+
+	// region based url construction
+	public static final String REGION_EAST_1_URL_DOMAIN_ADDRESS
+			= ApplicationPropertiesUtils.getProperty("REGION_EAST_1_URL_DOMAIN_ADDRESS");
+	public static final String REGION_WEST_1_URL_DOMAIN_ADDRESS
+			= ApplicationPropertiesUtils.getProperty("REGION_WEST_1_URL_DOMAIN_ADDRESS");
+	public static final String REGION_WEST_2_URL_DOMAIN_ADDRESS
+			= ApplicationPropertiesUtils.getProperty("REGION_WEST_2_URL_DOMAIN_ADDRESS");
 
 	// queue paths
 	public static final String SQS_IMAGE_QUEUE_NAME
@@ -63,13 +81,10 @@ public class EmailPostUtils {
 	public static final String TO_2 = ApplicationPropertiesUtils.getProperty("TO_2");
 	public static final String SUBJECT = ApplicationPropertiesUtils.getProperty("SUBJECT");
 
-	public static final String CONFIRMATION_EMAIL_SUBJECT = "Document Received.";
-	public static final String CONFIRMATION_EMAIL_BODY = "Dear Customer,\n"
-			+ "Thank you for submitting the order related required document via email."
-			+ "  A representative will review and process your document within"
-			+ " 24 to 48 hours."
-			+ "\n\n\n\nThank you for your business."
-			+ "\n\n\nYour Purchasing Power Team.";
+	public static final String CONFIRMATION_EMAIL_SUBJECT
+			= ApplicationPropertiesUtils.getProperty("CONFIRMATION_EMAIL_SUBJECT");
+	public static final String CONFIRMATION_EMAIL_BODY
+			= ApplicationPropertiesUtils.getProperty("CONFIRMATION_EMAIL_BODY");
 
 	public static final long _INTERVAL_IN_SECONDS
 			= ApplicationPropertiesUtils.getLongVal("_INTERVAL_IN_SECONDS", 120);
@@ -85,4 +100,26 @@ public class EmailPostUtils {
 			= ApplicationPropertiesUtils.getProperty("QUEUE_SERVICE_URL_EMAIL");
 	public static final String QUEUE_SERVICE_URL_DOCUMENT_WITH_PAYLOAD
 			= ApplicationPropertiesUtils.getProperty("QUEUE_SERVICE_URL_DOCUMENT_WITH_PAYLOAD");
+
+	public static final String SENDGRID_USERNAME
+			= ApplicationPropertiesUtils.getProperty("SENDGRID_USERNAME");
+	public static final String SENDGRID_PASSWORD
+			= ApplicationPropertiesUtils.getProperty("SENDGRID_PASSWORD");
+
+	/**
+	 * Confirmation email from html file
+	 * 
+	 * @return
+	 * @throws IOException 
+	 */
+	public static final String getConfirmationHtml() throws IOException {
+		if (htmlString == null) {
+			Path path = Paths.get(HOME_PATH.concat
+						(ApplicationPropertiesUtils.getProperty("CONFIRMATION_EMAIL_HTML_PATH")),
+					ApplicationPropertiesUtils.getProperty("CONFIRMATION_EMAIL_HTML_FILE"));
+			htmlString = new String(Files.readAllBytes(path));
+		}
+
+		return htmlString;
+	}
 }

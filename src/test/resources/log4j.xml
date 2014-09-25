@@ -11,7 +11,8 @@
 	</appender>
 
 	<appender name="default.file" class="org.apache.log4j.FileAppender">
-		<param name="file" value="../logs/pdm-ePostWs.log" />
+		<!--<param name="file" value="../logs/pdm-ePostWs.log" />-->
+		<param name="file" value="pdm-ePostWs.log" />
 		<param name="append" value="true" />
 		<param name="threshold" value="debug" />
 		<layout class="org.apache.log4j.PatternLayout">

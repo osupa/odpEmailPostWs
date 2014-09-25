@@ -15,6 +15,8 @@ import java.text.MessageFormat;
  *
  */
 public class QueueServiceAuth implements Serializable {
+	static final long serialVersionUID = 100002l;
+	
     private String accessToken = null;
 	private String tokenType = null;
 	private long expiresIn = 0l;

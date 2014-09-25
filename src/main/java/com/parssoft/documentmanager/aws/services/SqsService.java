@@ -23,10 +23,6 @@ import org.slf4j.LoggerFactory;
  */
 public class SqsService {
 
-	private static final String SLASH = "/";
-	private static final String URL_PART_1 = "https://";
-	private static final String URL_PART_2 = ".s3.amazonaws.com";
-
 	private static final AmazonSQS sqs =
 			new AmazonSQSClient(AwsCredentialsHandler.getCredentials());
 

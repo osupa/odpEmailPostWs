@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk</artifactId>
-			<version>1.8.4</version>
+			<version>1.8.9</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
@@ -152,7 +152,12 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.3.5</version>
 		</dependency>
-
+	 <dependency>
+	  <groupId>com.odp.dm.utils</groupId>
+	  <artifactId>dm-utils</artifactId>
+	  <version>0.2</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 	<build>
 		<finalName>pdm-ePostWs</finalName>

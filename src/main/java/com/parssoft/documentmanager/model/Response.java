@@ -4,7 +4,7 @@ package com.parssoft.documentmanager.model;
  *
  * Created on Aug 27, 2014, 7:14:34 AM
  *
- * @author Ade Panko <ade@adepanko.com>
+ * @author Ade
  *
  * Copyright(c) 2014 Copyright(c) 2014 ParsSoft. All Rights Reserved. This software is the proprietary information of
  * ParsSoft.

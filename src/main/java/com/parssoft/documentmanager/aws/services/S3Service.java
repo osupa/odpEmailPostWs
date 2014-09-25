@@ -3,7 +3,8 @@ package com.parssoft.documentmanager.aws.services;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
+import static com.amazonaws.services.s3.model.ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
@@ -40,18 +41,32 @@ public class S3Service {
 
 	/**
 	 * 
-	 * @param uploadDirectory
+	 * @param uploadBucket
 	 * @param file
+	 * @return
 	 * @throws IOException
 	 */
-	public void addDocumentToS3Bucket(String uploadDirectory, File file) throws IOException {
+	public String addDocumentToS3Bucket(String uploadBucket, File file) throws IOException {
+		String fileVersionId = null;
 
 		try {
-			PutObjectResult putObject = s3.putObject(
-					(new PutObjectRequest(uploadDirectory, file.getName(), file)).withCannedAcl(CannedAccessControlList.PublicRead));
+			PutObjectRequest putRequest =
+					new PutObjectRequest(uploadBucket, file.getName(), file);
+
+			// setup server-side encryption
+			ObjectMetadata objectMetadata = new ObjectMetadata();
+			objectMetadata.setSSEAlgorithm(AES_256_SERVER_SIDE_ENCRYPTION);
+			putRequest.setMetadata(objectMetadata);
+			// do not make it public
+//			putRequest.withCannedAcl(CannedAccessControlList.PublicRead);
+
+			PutObjectResult response = s3.putObject(putRequest);
+			fileVersionId = response.getVersionId();
 		} catch (AmazonServiceException ase) {
 			GenericUtilities.logAmazonServiceException(log, ase);
 		}
+		
+		return fileVersionId;
 	}
 
 	/**
