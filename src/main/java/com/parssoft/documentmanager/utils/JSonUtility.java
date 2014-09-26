@@ -71,20 +71,4 @@ public final class JSonUtility {
 		}
 	}
 
-	/**
-	 *
-	 * @param jsonString
-	 * @return
-	 */
-//	public static final Map<String, String> convertJsonToMap(String jsonString) {
-//		Map<String, String> map = new HashMap<>();
-//
-//		try {
-//			map = mapper.readValue(jsonString, new TypeReference<HashMap<String, String>>(){});
-//		} catch (IOException ex) {
-//			Logger.getLogger(JSonUtility.class.getName()).log(Level.SEVERE, null, ex);
-//		}
-//
-//		return map;
-//	}
 }

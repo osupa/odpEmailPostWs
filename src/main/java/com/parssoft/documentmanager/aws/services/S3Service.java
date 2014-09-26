@@ -15,7 +15,6 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * This class is our S3 Service layer.  It provides access to S3 for uploading document files
  * 
@@ -33,10 +32,7 @@ public class S3Service {
 	private static final Logger log = LoggerFactory.getLogger(S3Service.class);
 
 	public S3Service() {
-//		if (s3 != null) {
-			s3 = new AmazonS3Client(AwsCredentialsHandler.getCredentials());
-//			s3.setRegion(RegionConfiguration.getRegion());
-//		}
+		s3 = new AmazonS3Client(AwsCredentialsHandler.getCredentials());
 	}
 
 	/**
