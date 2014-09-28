@@ -3,6 +3,7 @@ package com.parssoft.documentmanager.aws.services;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import static com.amazonaws.services.s3.model.ObjectMetadata.AES_256_SERVER_SIDE_ENCRYPTION;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -16,13 +17,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is our S3 Service layer.  It provides access to S3 for uploading document files
- * 
+ * This class is our S3 Service layer. It provides access to S3 for uploading document files
+ *
  * Created on Jul 17, 2014, 7:10:04 PM
  *
  * @author Ade
  *
- * Copyright(c) 2014 ParsSoft.  All Rights Reserved. This software is the proprietary information of ParsSoft
+ * Copyright(c) 2014 ParsSoft. All Rights Reserved. This software is the proprietary information of ParsSoft
  *
  */
 public class S3Service {
@@ -36,7 +37,7 @@ public class S3Service {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param uploadBucket
 	 * @param file
 	 * @return
@@ -46,8 +47,8 @@ public class S3Service {
 		String fileVersionId = null;
 
 		try {
-			PutObjectRequest putRequest =
-					new PutObjectRequest(uploadBucket, file.getName(), file);
+			PutObjectRequest putRequest
+					= new PutObjectRequest(uploadBucket, file.getName(), file);
 
 			// setup server-side encryption
 			ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -55,13 +56,14 @@ public class S3Service {
 			putRequest.setMetadata(objectMetadata);
 			// do not make it public
 //			putRequest.withCannedAcl(CannedAccessControlList.PublicRead);
+			putRequest.withCannedAcl(CannedAccessControlList.AuthenticatedRead);
 
 			PutObjectResult response = s3.putObject(putRequest);
 			fileVersionId = response.getVersionId();
 		} catch (AmazonServiceException ase) {
 			GenericUtilities.logAmazonServiceException(log, ase);
 		}
-		
+
 		return fileVersionId;
 	}
 

@@ -132,7 +132,7 @@ public class EmailProcessor {
 						+ SLASH
 						+ EmailPostUtils.S3_EMAIL_DOCUMENT_UPLOAD_DIR
 						+ (SLASH + attachment.getFileItem().getName()),
-					"odp-uploads", fileVersionId);
+					EmailPostUtils.S3_EMAIL_DOCUMENT_UPLOAD_DIR, fileVersionId);
 
 			// cleanup
 			localFile.delete();
