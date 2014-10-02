@@ -62,6 +62,7 @@ public class S3Service {
 			fileVersionId = response.getVersionId();
 		} catch (AmazonServiceException ase) {
 			GenericUtilities.logAmazonServiceException(log, ase);
+			throw ase;
 		}
 
 		return fileVersionId;
