@@ -58,7 +58,7 @@ public class EmailProcessor {
 		mail.setFrom(GenericUtilities.emailAddressOnly(mail.getFrom()));
 		mail.setTo(GenericUtilities.emailAddressOnly(mail.getTo()));
 
-		// process attachment
+		// process attachments
 		if ((mail.getAttachments() != null) && (mail.getAttachments().length > 0)) {
 			logger.info("There is an attachment in this email.");
 

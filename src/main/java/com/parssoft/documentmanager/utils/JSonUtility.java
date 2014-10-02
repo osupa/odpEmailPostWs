@@ -58,7 +58,7 @@ public final class JSonUtility {
 	 * @throws JsonProcessingException
 	 * @throws IOException
 	 */
-	public static final Object convertJsonToBean(Class classType, String json)
+	public static final Object convertJsonToBean(Class<?> classType, String json)
 			throws JsonProcessingException, IOException {
 
 		Object obj;
