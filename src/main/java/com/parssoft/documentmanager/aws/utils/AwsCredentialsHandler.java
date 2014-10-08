@@ -1,11 +1,14 @@
 package com.parssoft.documentmanager.aws.utils;
 
 import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.parssoft.documentmanager.utils.EmailPostUtils;
-import com.amazonaws.auth.AWSCredentialsProvider;
+import com.parssoft.documentmanager.utils.GenericUtilities;
 import java.text.MessageFormat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This is our generic credentials handling class.  It allows us
@@ -23,7 +26,7 @@ import java.text.MessageFormat;
 public final class AwsCredentialsHandler {
 
 	private static AwsCredentialsHandler instance = null;
-	private static AWSCredentialsProvider credentialsProvider = null;
+	private static final Logger log = LogManager.getLogger(AwsCredentialsHandler.class);
 
 	static AWSCredentials credentials;
 
@@ -33,7 +36,6 @@ public final class AwsCredentialsHandler {
 					new ProfileCredentialsProvider(
 							EmailPostUtils.AWS_PROFILES_CREDENTIALS_PATH,
 							EmailPostUtils.AWS_PROFILE_NAME).getCredentials();
-//			credentialsProvider = 
 		} catch (Exception e) {
 			throw new AmazonClientException(
 					MessageFormat.format("Cannot load the credentials from the"
@@ -45,9 +47,19 @@ public final class AwsCredentialsHandler {
 		}
 	}
 
+	/**
+	 * Return our verified credentials
+	 * 
+	 * @return
+	 */
 	public final static AWSCredentials getCredentials() {
 		if (instance == null) {
-			instance = new AwsCredentialsHandler();
+			try {
+				instance = new AwsCredentialsHandler();
+			} catch (AmazonServiceException ase) {
+				GenericUtilities.logAmazonServiceException(log, ase);
+				throw ase;
+			}
 		}
 		return credentials;
 	}

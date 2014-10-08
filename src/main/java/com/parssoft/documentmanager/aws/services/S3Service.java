@@ -13,8 +13,8 @@ import com.parssoft.documentmanager.aws.utils.AwsCredentialsHandler;
 import com.parssoft.documentmanager.utils.GenericUtilities;
 import java.io.File;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class is our S3 Service layer. It provides access to S3 for uploading document files
@@ -30,14 +30,25 @@ public class S3Service {
 
 	private AmazonS3 s3 = null;
 
-	private static final Logger log = LoggerFactory.getLogger(S3Service.class);
+	private static final Logger log = LogManager.getLogger(S3Service.class);
 
+	/**
+	 * Initialize with credentials
+	 */
 	public S3Service() {
-		s3 = new AmazonS3Client(AwsCredentialsHandler.getCredentials());
+		try {
+			s3 = new AmazonS3Client(AwsCredentialsHandler.getCredentials());
+		} catch (AmazonServiceException ase) {
+			GenericUtilities.logAmazonServiceException(log, ase);
+			throw ase;
+		}
 	}
 
 	/**
-	 *
+	 * Use this method to add a document/file to a given S3 bucket
+	 * We perform server side AES 256 bit encryption with each file uploaded
+	 * and we request a file version ID
+	 * 
 	 * @param uploadBucket
 	 * @param file
 	 * @return
@@ -54,8 +65,6 @@ public class S3Service {
 			ObjectMetadata objectMetadata = new ObjectMetadata();
 			objectMetadata.setSSEAlgorithm(AES_256_SERVER_SIDE_ENCRYPTION);
 			putRequest.setMetadata(objectMetadata);
-			// do not make it public
-//			putRequest.withCannedAcl(CannedAccessControlList.PublicRead);
 			putRequest.withCannedAcl(CannedAccessControlList.AuthenticatedRead);
 
 			PutObjectResult response = s3.putObject(putRequest);
@@ -70,7 +79,8 @@ public class S3Service {
 
 
 	/**
-	 *
+	 * Retrieve a document/file from S3
+	 * 
 	 * @param downloadDirectory
 	 * @param fileName
 	 * @return

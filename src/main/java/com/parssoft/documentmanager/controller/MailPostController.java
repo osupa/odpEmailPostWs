@@ -1,19 +1,17 @@
 package com.parssoft.documentmanager.controller;
 
-
 import com.parssoft.documentmanager.model.Email;
 import com.parssoft.documentmanager.model.EmailLight;
 import com.parssoft.documentmanager.rest.services.QueueServicesClient;
 import com.parssoft.documentmanager.services.email.EmailProcessor;
-import com.parssoft.documentmanager.services.email.SendGrid;
 
 
 import static com.parssoft.documentmanager.utils.GenericUtilities.getCurrentTimeAsyyyyMMddDashHHmmss;
 import static com.parssoft.documentmanager.utils.GenericUtilities.logException;
 import java.util.Date;
-import org.slf4j.Logger;
 import java.io.IOException;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
+ * This class is our main SendGrid entry point.  It provides a restful web service
+ * end point for incoming email messages with attachments
  *
  * @author Ade
  *
@@ -33,9 +33,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @SessionAttributes
 public class MailPostController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MailPostController.class);
+	private static final Logger logger = LogManager.getLogger(MailPostController.class);
 
 	/**
+	 * This is our restful SendGrid endpoint
 	 *
 	 * @param mail
 	 * @return
@@ -57,32 +58,12 @@ public class MailPostController {
 		return mail;
 	}
 
-	/*
-		boolean isAttachment = false;
-		File localFile = null;
-		File encryptedFile = null;
-
-		// process attachment
-		if ((mail.getAttachments() != null) && (mail.getAttachments().length > 0)) {
-			isAttachment = true;
-			logger.debug("There is an attachment in this email.");
-
-			localFile = new File(EmailPostUtils.LOCAL_FILE_STORE
-					+ mail.getAttachment1().getOriginalFilename());
-			try {
-				mail.getAttachment1().transferTo(localFile);
-
-				// encrypt the file
-				encryptedFile = FileEncryptionUtils.encrypt(localFile);
-				mail.setFileName(encryptedFile.getName());
-				mail.setFileSize(encryptedFile.length());
-
-				logger.debug("Attachment saved locally as: " + localFile.getName());
-			} catch (IOException | IllegalStateException | FileEncryptionException ex) {
-				logException(logger, ex);
-
-	*/
-
+	/**
+	 * Test endpoint - to use, make public and test
+	 * @param mail
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(value = "/rest/email/test",
 					headers = "content-type=multipart/form-data",
 					consumes = {"multipart/form-data", "text/plain", "application/*"},
@@ -90,12 +71,16 @@ public class MailPostController {
 	public @ResponseBody String test (@ModelAttribute Email mail) throws IOException {
 			logger.debug("Sending to DynamoDB queue manager");
 
-			getTestMail(mail);
+			try {
+				getTestMail(mail);
 
-			QueueServicesClient client = new QueueServicesClient();
-			client.postToEmailInboundQueue(mail);
-			
-		return "welcome";
+				QueueServicesClient client = new QueueServicesClient();
+				client.postToEmailInboundQueue(mail);
+			} catch (IOException | IllegalStateException ex) {
+				logException(logger, ex);
+			}
+//		return "welcome";
+		return null;
 	}
 
 	private void getTestMail(Email mail) {
@@ -109,6 +94,6 @@ public class MailPostController {
 
 			mail.setAttachment1(null);
 
-			SendGrid.sendConfirmationEmailUsingSendGrid(mail.getFrom());
+//			SendGrid.sendConfirmationEmailUsingSendGrid(mail.getFrom());
 	}
 }
