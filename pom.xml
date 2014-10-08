@@ -121,12 +121,6 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.3.5</version>
 		</dependency>
-		<dependency>
-			<groupId>com.odp.dm.utils</groupId>
-			<artifactId>dm-utils</artifactId>
-			<version>0.2</version>
-			<type>jar</type>
-		</dependency>
 	</dependencies>
 	<build>
 		<finalName>pdm-ePostWs</finalName>
