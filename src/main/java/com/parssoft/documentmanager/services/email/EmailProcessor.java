@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -35,7 +35,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  */
 public class EmailProcessor {
 
-	private final static Logger logger = LoggerFactory.getLogger(EmailProcessor.class);
+	private final static Logger logger = LogManager.getLogger(EmailProcessor.class);
 	
 	public EmailProcessor() {}
 
@@ -63,7 +63,7 @@ public class EmailProcessor {
 			logger.info("There is an attachment in this email.");
 
 			this.processAttachments(mail);
-			logger.info("Json string = " + JSonUtility.convertBeanToJsonString(mail));
+			logger.info("Json string from inbound email = " + JSonUtility.convertBeanToJsonString(mail));
 		}
 
 		try {

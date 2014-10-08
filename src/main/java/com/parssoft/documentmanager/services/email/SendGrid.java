@@ -7,8 +7,8 @@ import com.parssoft.documentmanager.utils.GenericUtilities;
 import com.sendgrid.SendGrid.Email;
 import com.sendgrid.SendGridException;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class uses the SendGrid email implementation for sending emails
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SendGrid {
 
-	private static final Logger log = LoggerFactory.getLogger(SendGrid.class.getName());
+	private static final Logger log = LogManager.getLogger(SendGrid.class.getName());
 
 	/**
 	 * Sends confirmation email

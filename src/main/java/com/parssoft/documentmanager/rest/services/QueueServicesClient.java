@@ -4,12 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.parssoft.documentmanager.model.Email;
 import com.parssoft.documentmanager.model.QueueServiceAuth;
 import com.parssoft.documentmanager.utils.EmailPostUtils;
+import com.parssoft.documentmanager.utils.GenericUtilities;
 import com.parssoft.documentmanager.utils.JSonUtility;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -28,7 +29,7 @@ import org.springframework.web.client.RestTemplate;
  */
 public class QueueServicesClient {
 
-	private static final Logger logger = LoggerFactory.getLogger(QueueServicesClient.class);
+	private static final Logger logger = LogManager.getLogger(QueueServicesClient.class);
 	
 	public QueueServicesClient() {}
 
@@ -49,13 +50,17 @@ public class QueueServicesClient {
 		HttpEntity<String> requestEntity
 				= new HttpEntity<>(EmailPostUtils.QUEUE_MANAGER_CREDENTIALS, headers);
 
-		ResponseEntity<String> entity = template.postForEntity(
-				EmailPostUtils.QUEUE_SERVICE_URL_AUTH,
-				requestEntity, String.class);
+		QueueServiceAuth auth = null;
+		try {
+			ResponseEntity<String> entity = template.postForEntity(
+					EmailPostUtils.QUEUE_SERVICE_URL_AUTH,
+					requestEntity, String.class);
 
-		QueueServiceAuth auth
-				= (QueueServiceAuth) JSonUtility.convertJsonToBean(
-						QueueServiceAuth.class, entity.getBody());
+			auth = (QueueServiceAuth) JSonUtility.convertJsonToBean(
+							QueueServiceAuth.class, entity.getBody());
+		} catch (org.springframework.web.client.HttpClientErrorException e) {
+			GenericUtilities.logException(logger, e);
+		}
 		
 		return auth;
 	}
@@ -78,15 +83,19 @@ public class QueueServicesClient {
 		RestTemplate template = new RestTemplate();
 		logger.info("JSon string(email) = " + JSonUtility.convertBeanToJsonString(email));
 
-		HttpEntity<String> requestEntity
-				= new HttpEntity<>(JSonUtility.convertBeanToJsonString(email), headers);
+		try {
+			HttpEntity<String> requestEntity
+					= new HttpEntity<>(JSonUtility.convertBeanToJsonString(email), headers);
 
-		String response = template.postForObject(
-				EmailPostUtils.QUEUE_SERVICE_URL_EMAIL.concat(
-						accessToken.getAccessToken()),
-					requestEntity, String.class);
+			String response = template.postForObject(
+					EmailPostUtils.QUEUE_SERVICE_URL_EMAIL.concat(
+							accessToken.getAccessToken()),
+						requestEntity, String.class);
 
-		logger.info("Response = " + response);
+			logger.info("Response = " + response);
+		} catch (org.springframework.web.client.HttpClientErrorException e) {
+			GenericUtilities.logException(logger, e);
+		}
 	}
 
 }

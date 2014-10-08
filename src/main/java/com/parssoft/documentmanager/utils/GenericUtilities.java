@@ -4,8 +4,8 @@ import com.amazonaws.AmazonServiceException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import org.slf4j.Logger;
-
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -66,11 +66,11 @@ public class GenericUtilities {
 	 * @param ase
 	 */
 	public static void logAmazonServiceException(Logger log, AmazonServiceException ase) {
-		log.error("Error Message:    " + ase.getMessage()
-			+ " HTTP Status Code: " + ase.getStatusCode()
-			+ " AWS Error Code:   " + ase.getErrorCode()
-			+ " Error Type:       " + ase.getErrorType()
-			+ " Request ID:       " + ase.getRequestId());
+		log.log(Level.ERROR, "Error Message: " + ase.getMessage()
+			+ "\nHTTP Status Code: " + ase.getStatusCode()
+			+ "\nAWS Error Code:   " + ase.getErrorCode()
+			+ "\nError Type:       " + ase.getErrorType()
+			+ "\nRequest ID:       " + ase.getRequestId());
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class GenericUtilities {
 	 * @param ex
 	 */
 	public static void logException(Logger log, Exception ex) {
-		log.error("Error Message:    " + ex.getMessage());
+		log.error("Error Message: " + ex.getMessage(), ex);
 	}
 
 	/**

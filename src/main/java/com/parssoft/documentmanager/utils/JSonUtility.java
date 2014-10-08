@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.parssoft.documentmanager.model.Email;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class provides simple object to JSon utilities
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public final class JSonUtility {
 
 	static final ObjectMapper mapper = new ObjectMapper();
-	private static final Logger log = LoggerFactory.getLogger(JSonUtility.class.getName());
+	private static final Logger log = LogManager.getLogger(JSonUtility.class.getName());
 
 	public JSonUtility() {
 		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
