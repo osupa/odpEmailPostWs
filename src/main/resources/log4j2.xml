@@ -6,14 +6,15 @@
 		</Console>
 		<RollingFile name="AppLogFile"
 					 fileName="../logs/pdm-ePostWs.log"
-					 filePattern="../logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz"
+					 filePattern="../logs/log-file-backups/pdm-ePostWs-%d{yyyy-MM-dd}-%i.log.gz"
 					 immediateFlush="true"
 					 append="true">
 			<PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
 			<Policies>
-				<TimeBasedTriggeringPolicy />
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
 				<SizeBasedTriggeringPolicy size="250 MB"/>
 			</Policies>
+			<DefaultRolloverStrategy max="20"/>
 		</RollingFile>
 	</Appenders>
 
