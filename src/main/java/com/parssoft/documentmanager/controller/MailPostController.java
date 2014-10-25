@@ -83,6 +83,33 @@ public class MailPostController {
 		return null;
 	}
 
+	/**
+	 * Test2 endpoint - to use, make public and test
+	 * @param mail
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/rest/email/test2",
+					headers = "content-type=multipart/form-data",
+					consumes = {"multipart/form-data", "text/plain", "application/*"},
+					method = RequestMethod.POST)
+	public @ResponseBody String test (String one) throws IOException {
+			logger.debug("In test2 method.");
+String two = "zz two";
+			logger.debug(one + " - " + two);
+			Email mail = new Email();
+//			try {
+				getTestMail(mail);
+
+				QueueServicesClient client = new QueueServicesClient();
+//				client.postToEmailInboundQueue(mail);
+//			} catch (IOException | IllegalStateException ex) {
+//				logException(logger, ex);
+//			}
+////		return "welcome";
+		return "zzTake";
+	}
+
 	private void getTestMail(Email mail) {
 		mail.setFrom("osupa@adepanko.com");
 			mail.setTo("osupa@adepanko.com");
