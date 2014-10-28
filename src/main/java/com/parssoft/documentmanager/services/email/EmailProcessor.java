@@ -53,10 +53,15 @@ public class EmailProcessor {
 			mail.setBody(mail.getText());
 		}
 		mail.setReceivedTime(new Date());
-		
-		// clean email addresses
-		mail.setFrom(GenericUtilities.emailAddressOnly(mail.getFrom()));
-		mail.setTo(GenericUtilities.emailAddressOnly(mail.getTo()));
+
+		if (EmailPostUtils.OUT_BOUND_EMAIL_FROM_ADDRESS.endsWith(EmailPostUtils.NOT_ALLOWED_TO_EMAIL_DOMAIN)) {
+			logger.error("Email from domain " + EmailPostUtils.NOT_ALLOWED_TO_EMAIL_DOMAIN + " is not allowed. Not sending confirmation email.");
+			return mail;
+		}
+		// set "to" to our inbound from first before reassignment
+		mail.setTo(GenericUtilities.emailAddressOnly(mail.getFrom()));
+		mail.setFrom(EmailPostUtils.OUT_BOUND_EMAIL_FROM_ADDRESS);
+		// clean email address
 
 		// process attachments
 		if ((mail.getAttachments() != null) && (mail.getAttachments().length > 0)) {
@@ -65,7 +70,7 @@ public class EmailProcessor {
 			this.processAttachments(mail);
 			logger.info("Json string from inbound email = " + JSonUtility.convertBeanToJsonString(mail));
 		}
-
+		
 		try {
 // old workflow
 //			logger.debug("Sending to sqs queue at " + getCurrentTimeAsyyyyMMddDashHHmmss());
@@ -73,12 +78,12 @@ public class EmailProcessor {
 //			sqsService.addMailDataToInboundQueue(JSonUtility.convertBeanToJsonString(mail));
 // old workflow
 
-			logger.debug("Sending to DynamoDB based queue manager");
+			logger.info("Sending to DynamoDB based queue manager");
 			QueueServicesClient queueServicesClient = new QueueServicesClient();
 			queueServicesClient.postToEmailInboundQueue(mail);
 
-			logger.debug("Sending confirmation email!!!");
-			SendGrid.sendConfirmationEmailUsingSendGrid(mail.getFrom());
+			logger.info("Sending confirmation email!!!");
+			SendGrid.sendConfirmationEmailUsingSendGrid(mail.getFrom(), mail.getTo());
 		} catch (JsonProcessingException ex) {
 			logException(logger, ex);
 		} catch (IOException ex) {

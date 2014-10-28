@@ -91,6 +91,10 @@ public class EmailPostUtils {
 
 	public static final String DYNAMO_DB_TABLE_NAME_EMAIL = "DYNAMO_DB_TABLE_NAME_EMAIL";
 
+	public static final String OUT_BOUND_EMAIL_FROM_ADDRESS = ApplicationPropertiesUtils.getValue("OUT_BOUND_EMAIL_FROM_ADDRESS");
+	public static final String NOT_ALLOWED_TO_EMAIL_DOMAIN
+			= ApplicationPropertiesUtils.getValue("NOT_ALLOWED_TO_EMAIL_DOMAIN");
+
 	// queue service
 	public static final String QUEUE_MANAGER_CREDENTIALS
 			= ApplicationPropertiesUtils.getProperty("AUTH_UP");

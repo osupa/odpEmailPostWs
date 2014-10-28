@@ -29,8 +29,9 @@ public class SendGrid {
 	 * Sends confirmation email
 	 *
 	 * @param fromAddress
+	 * @param toAddress
 	 */
-	public static void sendConfirmationEmailUsingSendGrid(String fromAddress) {
+	public static void sendConfirmationEmailUsingSendGrid(String fromAddress, String toAddress) {
 		com.sendgrid.SendGrid sendGrid
 				= new com.sendgrid.SendGrid(SENDGRID_USERNAME, SENDGRID_PASSWORD);
 
@@ -40,7 +41,7 @@ public class SendGrid {
 		}
 
 		fromAddress = GenericUtilities.emailAddressOnly(fromAddress);
-		email.addTo(fromAddress);
+		email.addTo(toAddress);
 		email.setFrom(fromAddress);
 		email.setSubject(EmailPostUtils.CONFIRMATION_EMAIL_SUBJECT);
 //		email.setText(EmailPostUtils.CONFIRMATION_EMAIL_BODY);
